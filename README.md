@@ -20,6 +20,9 @@ This dashboard serves as a decision-support tool for traders and risk analysts, 
   * **Dynamic Volatility Analysis:** Calculates 21-day rolling standard deviation, annualized ($\sigma \times \sqrt{252}$) to measure market risk.
   * **Momentum Tracking:** Integrated **RSI (Relative Strength Index)** to detect Overbought (\>70) and Oversold (\<30) conditions.
   * **Trend Identification:** Uses SMA (Simple Moving Averages) crossover logic (SMA 20 vs SMA 50).
+  * **Portfolio Optimization:** Analyzes multiple assets to calculate Expected Returns and Covariance Matrix.
+  * **Top Performers Scanner:** Automatically identifies top-performing stocks from a given list (e.g., BIST 30) over a specified period.
+  * **Monte Carlo Simulation:** Simulates 10,000+ portfolio combinations to identify the Optimal Portfolio based on the Sharpe Ratio (Efficient Frontier).
   * **Professional Visualization:** Interactive **Plotly** charts with removed non-trading days (weekends) for a seamless analytical experience.
 
 -----
@@ -42,6 +45,17 @@ $$\sigma_{annual} = \sigma_{daily} \times \sqrt{252}$$
 ### 3\. RSI (Relative Strength Index)
 
 Used to measure the speed and change of price movements to identify potential reversal points.
+
+### 4\. Modern Portfolio Theory (MPT)
+
+Uses Mean-Variance Optimization to assess portfolio risk and return.
+$$E(R_p) = \sum w_i E(R_i)$$
+$$\sigma_p = \sqrt{w^T \Sigma w}$$
+
+### 5\. Monte Carlo Simulation & Sharpe Ratio
+
+Generates random portfolio weights to visualize the Efficient Frontier and find the maximum Sharpe ratio (Risk-Adjusted Return).
+$$Sharpe = \frac{R_p - R_f}{\sigma_p}$$
 
 -----
 
@@ -78,6 +92,8 @@ Used to measure the speed and change of price movements to identify potential re
 
 This project is evolving into a comprehensive Risk Management Suite. Upcoming modules:
 
+  - [x] **Portfolio Optimization:** Mean-Variance Analysis & Efficient Frontier.
+  - [x] **Monte Carlo Simulation:** 10,000+ scenarios for optimal asset allocation.
   - [ ] **Correlation Matrix:** Detecting cross-asset dependencies (Heatmap).
   - [ ] **Beta Calculation:** Measuring systematic risk against benchmark indices (S\&P 500 / BIST 100).
   - [ ] **Credit Risk Modeling:** Implementing Machine Learning classifiers for credit scoring.
@@ -88,6 +104,6 @@ This project is evolving into a comprehensive Risk Management Suite. Upcoming mo
 ## 👤 Author
 
 **Ahmet Hasdemir**
-*Economics Student | Financial Data Analyst*
+*Economics Student | Financial Data Analyst / Jr. Data Scientist*
 
 [LinkedIn](https://www.linkedin.com/in/ahasdemir/) | [GitHub](https://github.com/ahasdemir)
