@@ -31,27 +31,35 @@ st.header("Value at Risk (VaR) Analysis")
 st.write("Calculate the Value at Risk for your portfolio using different methods.")
 tickers = st.multiselect("Select Stocks for VaR Analysis", snp500_tickers, default=["AAPL", "MSFT", "GOOGL"])
 weights_input = st.text_input("Enter corresponding weights (comma-separated)", "0.33, 0.33, 0.34")
+use_equal_weights = st.checkbox("Use equal weights", value=False)
 period = st.selectbox("Select Period", ["1mo", "3mo", "6mo", "1y", "2y", "5y", "10y"], index=3)
 portfolio_value = st.number_input("Portfolio Value ($)", min_value=1000, max_value=10000000, value=100000)
 confidence_level = st.slider("Confidence Level (%)", min_value=90, max_value=99, value=95) / 100
     
 if st.button("Calculate VaR"):
     tickers_list = list(tickers)
-    try:
-        weights = [float(w.strip()) for w in weights_input.split(",")]
-    except ValueError:
-        st.error("Weights must be numeric values separated by commas.")
+    if len(tickers_list) == 0:
+        st.error("Please select at least one ticker.")
         st.stop()
 
-    if len(weights) != len(tickers_list):
-        st.error("Number of tickers and weights do not match. Please check.")
-        st.stop()
+    if use_equal_weights:
+        weights = [1 / len(tickers_list)] * len(tickers_list)
+    else:
+        try:
+            weights = [float(w.strip()) for w in weights_input.split(",")]
+        except ValueError:
+            st.error("Weights must be numeric values separated by commas.")
+            st.stop()
 
-    weight_sum = sum(weights)
-    if weight_sum == 0:
-        st.error("Sum of weights cannot be zero.")
-        st.stop()
-    weights = [w / weight_sum for w in weights]
+        if len(weights) != len(tickers_list):
+            st.error("Number of tickers and weights do not match. Please check.")
+            st.stop()
+
+        weight_sum = sum(weights)
+        if weight_sum == 0:
+            st.error("Sum of weights cannot be zero.")
+            st.stop()
+        weights = [w / weight_sum for w in weights]
 
     portfolio_data = get_portfolio_history(tickers_list, period=period)
         

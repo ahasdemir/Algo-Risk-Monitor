@@ -30,25 +30,33 @@ st.write("Analyze the performance of your portfolio over time.")
 
 tickers = st.multiselect("Select Stocks for Portfolio Analysis", snp500_tickers, default=["AAPL", "MSFT", "GOOGL"])
 weights_input = st.text_input("Enter corresponding weights (comma-separated)", "0.4, 0.4, 0.2")
+use_equal_weights = st.checkbox("Use equal weights", value=False)
 period = st.selectbox("Select Period", ["1mo", "3mo", "6mo", "1y", "2y", "5y", "10y", "max"])
 
 if st.button("Analyze Portfolio Performance"):
     tickers_list = list(tickers)
-    try:
-        weights = [float(w.strip()) for w in weights_input.split(",")]
-    except ValueError:
-        st.error("Weights must be numeric values separated by commas.")
+    if len(tickers_list) == 0:
+        st.error("Please select at least one ticker.")
         st.stop()
 
-    if len(weights) != len(tickers_list):
-        st.error("Number of tickers and weights do not match. Please check.")
-        st.stop()
+    if use_equal_weights:
+        weights = [1 / len(tickers_list)] * len(tickers_list)
+    else:
+        try:
+            weights = [float(w.strip()) for w in weights_input.split(",")]
+        except ValueError:
+            st.error("Weights must be numeric values separated by commas.")
+            st.stop()
 
-    weight_sum = sum(weights)
-    if weight_sum == 0:
-        st.error("Sum of weights cannot be zero.")
-        st.stop()
-    weights = [w / weight_sum for w in weights]
+        if len(weights) != len(tickers_list):
+            st.error("Number of tickers and weights do not match. Please check.")
+            st.stop()
+
+        weight_sum = sum(weights)
+        if weight_sum == 0:
+            st.error("Sum of weights cannot be zero.")
+            st.stop()
+        weights = [w / weight_sum for w in weights]
     portfolio_data = get_portfolio_history(tickers_list, period=period)
     portfolio_return, portfolio_volatility = portfolio_performance_with_data(portfolio_data, weights, period=period)
         

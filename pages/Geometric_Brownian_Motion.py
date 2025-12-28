@@ -30,6 +30,7 @@ st.header("Monte Carlo Geometric Brownian Motion Simulation")
 st.write("Simulate future stock prices using Geometric Brownian Motion.")
 tickers = st.multiselect("Select Stocks for GBM Simulation", snp500_tickers, default=["AAPL", "MSFT", "GOOGL"])
 weights_input = st.text_input("Enter corresponding weights (comma-separated)", "0.33, 0.33, 0.34")
+use_equal_weights = st.checkbox("Use equal weights", value=False)
 period = st.selectbox("Select Period", ["1mo", "3mo", "6mo", "1y", "2y", "5y"], index=3)
 start_value = st.number_input("Starting Portfolio Value ($)", min_value=1000, max_value=10000000, value=100000)
 num_simulations = st.number_input("Number of Simulations", min_value=100, max_value=5000, value=500)
@@ -37,22 +38,29 @@ time_horizon = st.number_input("Time Horizon (days)", min_value=1, max_value=252
 
 if st.button("Run Simulation"):
         tickers_list = list(tickers)
-        try:
-            weights = [float(w.strip()) for w in weights_input.split(",")]
-        except ValueError:
-            st.error("Weights must be numeric values separated by commas.")
+        if len(tickers_list) == 0:
+            st.error("Please select at least one ticker.")
             st.stop()
 
-        if len(weights) != len(tickers_list):
-            st.error("Number of tickers and weights do not match. Please check.")
-            st.stop()
+        if use_equal_weights:
+            weights = [1 / len(tickers_list)] * len(tickers_list)
+        else:
+            try:
+                weights = [float(w.strip()) for w in weights_input.split(",")]
+            except ValueError:
+                st.error("Weights must be numeric values separated by commas.")
+                st.stop()
 
-        # Normalize weights if they don't sum to 1 to avoid user input issues
-        weight_sum = sum(weights)
-        if weight_sum == 0:
-            st.error("Sum of weights cannot be zero.")
-            st.stop()
-        weights = [w / weight_sum for w in weights]
+            if len(weights) != len(tickers_list):
+                st.error("Number of tickers and weights do not match. Please check.")
+                st.stop()
+
+            # Normalize weights if they don't sum to 1 to avoid user input issues
+            weight_sum = sum(weights)
+            if weight_sum == 0:
+                st.error("Sum of weights cannot be zero.")
+                st.stop()
+            weights = [w / weight_sum for w in weights]
 
         portfolio_data = get_portfolio_history(tickers_list, period=period)
         
