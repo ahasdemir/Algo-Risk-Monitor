@@ -57,6 +57,7 @@ if st.button("Analyze Portfolio Performance"):
             st.error("Sum of weights cannot be zero.")
             st.stop()
         weights = [w / weight_sum for w in weights]
+        
     portfolio_data = get_portfolio_history(tickers_list, period=period)
     portfolio_return, portfolio_volatility = portfolio_performance_with_data(portfolio_data, weights, period=period)
         

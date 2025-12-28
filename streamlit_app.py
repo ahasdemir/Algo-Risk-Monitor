@@ -28,8 +28,9 @@ gbm = st.Page("pages/Geometric_Brownian_Motion.py", title="Geometric Brownian Mo
 portfolio_performance = st.Page("pages/portfolio_performance.py", title="Portfolio Performance", icon=":material/trending_up:")
 var_analysis = st.Page("pages/VaR.py", title="Value at Risk (VaR) Analysis", icon=":material/assessment:")
 correlation_heatmap = st.Page("pages/correlation_heatmap.py", title="Correlation Heatmap", icon=":material/bubble_chart:")
+portfolio_optimization = st.Page("pages/portfolio_optimization.py", title="Portfolio Optimization", icon=":material/speed:")
 
-pg = st.navigation([home, gbm, var_analysis, correlation_heatmap, portfolio_performance])
+pg = st.navigation([home, gbm, var_analysis, correlation_heatmap, portfolio_optimization, portfolio_performance])
 pg.run()
 
 # Footer

@@ -140,7 +140,7 @@ def geometric_brownian_motion(df_portfolio, weights, start_value=100000, days=25
 
     return portfolio_paths
 
-def efficient_frontier_analysis_with_monte_carlo(df_portfolio, num_portfolios=10000, period="1y", seed=None):
+def efficient_frontier_analysis_with_monte_carlo(df_portfolio, num_portfolios=10000, period="1y", seed=None, risk_free_rate: float = 0.0):
     if seed is not None:
         np.random.seed(seed)
 
@@ -151,8 +151,6 @@ def efficient_frontier_analysis_with_monte_carlo(df_portfolio, num_portfolios=10
     vol_arr = np.zeros(num_portfolios)
     sharpe_arr = np.zeros(num_portfolios)
 
-    print(f"{num_portfolios} senaryo hesaplanıyor... for {period}")
-
     for i in range(num_portfolios):
         w = np.random.random(n)
         w /= w.sum()
@@ -160,10 +158,71 @@ def efficient_frontier_analysis_with_monte_carlo(df_portfolio, num_portfolios=10
         ret, vol = portfolio_performance_with_data(df_portfolio, list(w), period=period)
         ret_arr[i] = ret
         vol_arr[i] = vol
-        sharpe_arr[i] = ret / vol if vol != 0 else 0
+        sharpe_arr[i] = (ret - risk_free_rate) / vol if vol != 0 else 0
 
-    max_idx = sharpe_arr.argmax()
-    return max_idx, ret_arr[max_idx], vol_arr[max_idx], all_weights[max_idx, :]
+    # Optimal portfolios
+    max_sharpe_idx = sharpe_arr.argmax()
+    min_vol_idx = vol_arr.argmin()
+
+    max_sharpe = {
+        "tickers": tickers,
+        "weights": {tickers[j]: float(all_weights[max_sharpe_idx, j]) for j in range(n)},
+        "return": float(ret_arr[max_sharpe_idx]),
+        "volatility": float(vol_arr[max_sharpe_idx]),
+        "sharpe": float(sharpe_arr[max_sharpe_idx]),
+        "risk_free_rate": float(risk_free_rate),
+    }
+
+    min_vol = {
+        "tickers": tickers,
+        "weights": {tickers[j]: float(all_weights[min_vol_idx, j]) for j in range(n)},
+        "return": float(ret_arr[min_vol_idx]),
+        "volatility": float(vol_arr[min_vol_idx]),
+        "sharpe": float(sharpe_arr[min_vol_idx]),
+        "risk_free_rate": float(risk_free_rate),
+    }
+
+    # Plotly figure for Efficient Frontier
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=vol_arr, y=ret_arr,
+        mode="markers",
+        name="Simulated Portfolios",
+        marker=dict(
+            color=sharpe_arr,
+            colorscale="Viridis",
+            showscale=True,
+            size=6,
+            opacity=0.7,
+            colorbar=dict(title="Sharpe")
+        ),
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=[vol_arr[max_sharpe_idx]], y=[ret_arr[max_sharpe_idx]],
+        mode="markers+text",
+        name="Max Sharpe",
+        marker=dict(color="red", size=10, symbol="star"),
+        text=["Max Sharpe"], textposition="top center",
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=[vol_arr[min_vol_idx]], y=[ret_arr[min_vol_idx]],
+        mode="markers+text",
+        name="Min Volatility",
+        marker=dict(color="orange", size=10, symbol="diamond"),
+        text=["Min Vol"], textposition="bottom center",
+    ))
+
+    fig.update_layout(
+        title=f"Efficient Frontier ({num_portfolios} simulations, period={period}, rf={risk_free_rate:.2%})",
+        xaxis_title="Volatility (Std Dev)",
+        yaxis_title="Expected Return",
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        height=600,
+    )
+
+    return fig, max_sharpe, min_vol
 
 def plot_correlation_heatmap(df):
     corr = df.corr()
@@ -171,7 +230,7 @@ def plot_correlation_heatmap(df):
         z=corr.values,
         x=corr.columns,
         y=corr.columns,
-        colorscale='jet',
+        colorscale='Portland',
         zmin=-1, zmax=1
     ))
     fig.update_layout(title="Stock Correlation Matrix", height=500)
