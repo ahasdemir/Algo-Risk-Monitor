@@ -6,7 +6,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import streamlit as st
 
+@st.cache_data
 def get_stock_data(ticker, period="1y"):
     df = yf.download(ticker, period=period, auto_adjust=True)
     if isinstance(df.columns, pd.MultiIndex):
@@ -28,6 +30,7 @@ def volatility_analysis(df):
     df["Volatility"] = df["Log_Return"].rolling(21).std() * np.sqrt(252)
     return df
 
+@st.cache_data
 def get_portfolio_history(symbols, period='1y'):
     portfolio_df = pd.DataFrame()
     
@@ -45,6 +48,7 @@ def portfolio_performance_with_data(portfolio_df, weights, period='1y'):
     portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(covariance_matrix, weights)))
     return portfolio_return, portfolio_volatility
 
+
 def calculate_parametric_var(df, portfolio_value=100000, confidence_level=0.95, day=1):
     """
     Hull'un 'Linear Model'ini (Parametrik VaR) kullanarak riski hesaplar.
@@ -59,6 +63,7 @@ def calculate_parametric_var(df, portfolio_value=100000, confidence_level=0.95, 
     var_value = portfolio_value * daily_volatility * z_score * np.sqrt(day)
     
     return var_value, current_annual_volatility
+
 
 def calculate_historical_var(df, portfolio_value=100000, confidence_level=0.95, day=1):
     """
@@ -94,6 +99,7 @@ def parametric_var_portfolio(df_portfolio, weights, portfolio_value=100000, conf
     var_value = portfolio_value * daily_volatility * z_score * np.sqrt(day)
     
     return var_value, portfolio_volatility
+
 
 def historical_var_portfolio(df_portfolio, weights, portfolio_value=100000, confidence_level=0.95, day=1):
     """
