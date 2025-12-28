@@ -113,10 +113,11 @@ def historical_var_portfolio(df_portfolio, weights, portfolio_value=100000, conf
     
     return portfolio_value * abs(var_percentile)
 
-def geometric_brownian_motion(df_portfolio, start_value=100000, days=252, simulations=500):
+def geometric_brownian_motion(df_portfolio, weights, start_value=100000, days=252, simulations=500):
     """
     Geometric Brownian Motion kullanarak portföy simülasyonu yapar.
     """
+    weights = np.array(weights)
     portfolio_daily_returns = df_portfolio.dot(weights)
     mu_p = portfolio_daily_returns.mean()          # Portföyün Günlük Drift'i
     sigma_p = portfolio_daily_returns.std()        # Portföyün Günlük Volatilitesi
