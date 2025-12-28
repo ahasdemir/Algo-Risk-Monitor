@@ -6,24 +6,22 @@
 
 ## 📋 Executive Summary
 
-In financial markets, price trends often mask the underlying risk. **Algo-Risk Monitor** is a quantitative analysis tool designed to bridge the gap between raw market data and actionable risk insights.
+In financial markets, price trends often mask the underlying risk. **Algo-Risk Monitor** is a quantitative analysis tool that now blends **technical momentum signals** with **multi-layered risk analytics** (parametric & historical VaR, portfolio stress tests, Monte Carlo) to turn raw market data into actionable insight.
 
-Unlike standard price trackers, this project focuses on **volatility clustering** and **momentum**, providing a comprehensive view of an asset's risk profile. It leverages **Logarithmic Returns** for statistical accuracy and calculates **Annualized Volatility** to standardize risk assessment across different timeframes.
-
-This dashboard serves as a decision-support tool for traders and risk analysts, enabling them to identify **"High Risk / Low Reward"** zones instantly.
+It leverages **Logarithmic Returns** for statistical accuracy, calculates **Annualized Volatility** to standardize risk across timeframes, and layers on **RSI/SMA momentum**, **efficient frontier search**, and **scenario simulations**. The notebook produces ready-to-use visual dashboards plus exportable CSV outputs for downstream tooling.
 
 -----
 
 ## 🚀 Key Features
 
-  * **Automated Data Pipeline:** Fetches real-time OHLCV (Open, High, Low, Close, Volume) data using `yfinance` API (Auto-adjusted for splits/dividends).
-  * **Dynamic Volatility Analysis:** Calculates 21-day rolling standard deviation, annualized ($\sigma \times \sqrt{252}$) to measure market risk.
-  * **Momentum Tracking:** Integrated **RSI (Relative Strength Index)** to detect Overbought (\>70) and Oversold (\<30) conditions.
-  * **Trend Identification:** Uses SMA (Simple Moving Averages) crossover logic (SMA 20 vs SMA 50).
-  * **Portfolio Optimization:** Analyzes multiple assets to calculate Expected Returns and Covariance Matrix.
-  * **Top Performers Scanner:** Automatically identifies top-performing stocks from a given list (e.g., BIST 30) over a specified period.
-  * **Monte Carlo Simulation:** Simulates 10,000+ portfolio combinations to identify the Optimal Portfolio based on the Sharpe Ratio (Efficient Frontier).
-  * **Professional Visualization:** Interactive **Plotly** charts with removed non-trading days (weekends) for a seamless analytical experience.
+  * **Automated Data Pipeline:** Pulls auto-adjusted OHLCV via `yfinance` and normalizes MultiIndex outputs.
+  * **Momentum + Trend:** RSI, SMA-20/50 crossovers, and price dashboard candlesticks in Plotly.
+  * **Volatility + VaR Suite:** 21-day annualized volatility, Hull-style parametric VaR, and historical VaR for both single tickers and weighted portfolios.
+  * **Portfolio Analytics:** Expected returns, covariance matrix, efficient frontier exploration, and Monte Carlo search for maximum Sharpe.
+  * **Screener:** BIST tickers scanner to surface the top 10 performers over a chosen window for deeper analysis.
+  * **Optimization Experiments:** Minimum-risk (VaR) weight search across the "Magnificent 7" universe.
+  * **Scenario Engine:** Geometric Brownian Motion simulation (500+ paths) with percentile bands for forward portfolio valuation.
+  * **Visual Outputs:** Plotly for interactive dashboards; Matplotlib/Seaborn for VaR distribution overlays.
 
 -----
 
@@ -57,14 +55,23 @@ $$\sigma_p = \sqrt{w^T \Sigma w}$$
 Generates random portfolio weights to visualize the Efficient Frontier and find the maximum Sharpe ratio (Risk-Adjusted Return).
 $$Sharpe = \frac{R_p - R_f}{\sigma_p}$$
 
+### 6\. Value at Risk (VaR)
+
+Parametric (normal) and historical simulation approaches are provided for single names and multi-asset portfolios to estimate left-tail loss at chosen confidence levels.
+
+### 7\. Geometric Brownian Motion (GBM)
+
+Monte Carlo forward paths ($S_t = S_{t-1} \exp((\mu - 0.5\sigma^2) + \sigma Z)$) are used to illustrate possible 1-year portfolio value envelopes.
+
 -----
 
 ## 🛠 Tech Stack
 
   * **Language:** Python
-  * **Data Manipulation:** Pandas, NumPy
+  * **Data Manipulation & Stats:** Pandas, NumPy, SciPy (for parametric VaR)
   * **Data Source:** yfinance (Yahoo Finance API)
-  * **Visualization:** Plotly Graph Objects, Plotly Subplots
+  * **Visualization:** Plotly (dashboards), Matplotlib + Seaborn (risk distributions)
+  * **Environment:** Jupyter / VS Code notebooks
 
 -----
 
@@ -80,11 +87,16 @@ $$Sharpe = \frac{R_p - R_f}{\sigma_p}$$
 2.  **Install dependencies:**
 
     ```bash
-    pip install yfinance pandas numpy plotly
+    pip install yfinance pandas numpy plotly scipy matplotlib seaborn
     ```
 
 3.  **Run the analysis:**
-    Open `Financial_Dashboard_Analysis.ipynb` in Jupyter Notebook or VS Code and run all cells.
+    Open `Financial_Dashboard_Analysis.ipynb` in Jupyter Notebook or VS Code, select your ticker list (e.g., `GARAN.IS`, `AAPL`, `NVDA`), and run all cells. The notebook prints tail summaries, shows dashboards, and can export CSVs (e.g., `TSLA_volatility_analysis.csv`).
+
+4.  **Optional workflows:**
+    * Switch `period` arguments (e.g., `10y`) for longer histories.
+    * Use the BIST screener to identify the top performers and feed them into the portfolio simulations.
+    * Adjust `num_portfolios` or `simulations` to trade off speed vs. scenario coverage.
 
 -----
 
