@@ -37,6 +37,22 @@ def volatility_analysis(df):
         name='Annualized Volatility (21-day)',
         line=dict(color='blue', width=2)
     ))
+    #lines in 80  and 20 levels
+    fig.add_trace(go.Scatter(
+        x=df.index,
+        y=[80/100]*len(df),
+        mode='lines',
+        name='80%',
+        line=dict(color='red', dash='dash')
+    ))
+    fig.add_trace(go.Scatter(
+        x=df.index,
+        y=[20/100]*len(df),
+        mode='lines',
+        name='20%',
+        line=dict(color='orange', dash='dash')
+    ))
+
     fig.update_layout(
         title="Rolling Annualized Volatility",
         xaxis_title="Date",
