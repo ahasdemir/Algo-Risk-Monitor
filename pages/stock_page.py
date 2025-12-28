@@ -40,15 +40,22 @@ if st.button("Get Stock Data"):
         st.dataframe(df.tail())
 
         df_indicators = add_indicators(df)
-        
+
 
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=df_indicators.index, y=df_indicators['Close'], mode='lines', name='Close Price'))
-        fig.add_trace(go.Scatter(x=df_indicators.index, y=df_indicators['SMA_20'], mode='lines', name='20-day SMA'))
-        fig.add_trace(go.Scatter(x=df_indicators.index, y=df_indicators['SMA_50'], mode='lines', name='50-day SMA'))
-        fig.add_trace(go.Scatter(x=df_indicators.index, y=df_indicators['SMA_200'], mode='lines', name='200-day SMA'))
+        fig.add_trace(go.Candlestick(
+            x=df_indicators.index,
+            open=df_indicators['Open'],
+            high=df_indicators['High'],
+            low=df_indicators['Low'],
+            close=df_indicators['Close'],
+            name='OHLC'
+        ))
+        fig.add_trace(go.Scatter(x=df_indicators.index, y=df_indicators['SMA_20'], mode='lines', name='20-day SMA', line=dict(color='orange')))
+        fig.add_trace(go.Scatter(x=df_indicators.index, y=df_indicators['SMA_50'], mode='lines', name='50-day SMA', line=dict(color='blue')))
+        fig.add_trace(go.Scatter(x=df_indicators.index, y=df_indicators['SMA_200'], mode='lines', name='200-day SMA', line=dict(color='red')))
 
-        fig.update_layout(title=f"{ticker} Price with Moving Averages", xaxis_title="Date", yaxis_title="Price ($)")
+        fig.update_layout(title=f"{ticker} Chart with Moving Averages", xaxis_title="Date", yaxis_title="Price ($)", xaxis_rangeslider_visible=False)
         st.plotly_chart(fig)
 
         st.subheader("Volatility Analysis")
