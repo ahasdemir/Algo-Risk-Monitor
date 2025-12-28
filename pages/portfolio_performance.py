@@ -13,7 +13,8 @@ from analysis_utils import (
     parametric_var_portfolio,
     historical_var_portfolio,
     geometric_brownian_motion,
-    efficient_frontier_analysis_with_monte_carlo
+    efficient_frontier_analysis_with_monte_carlo,
+    plot_correlation_heatmap
 )
 
 st.set_page_config(
