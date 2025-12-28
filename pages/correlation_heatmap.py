@@ -15,7 +15,8 @@ from analysis_utils import (
     historical_var_portfolio,
     geometric_brownian_motion,
     efficient_frontier_analysis_with_monte_carlo,
-    plot_correlation_heatmap
+    plot_correlation_heatmap,
+    snp500_tickers
 )
 
 st.set_page_config(
@@ -25,12 +26,12 @@ st.set_page_config(
 
 st.header("Correlation Heatmap")
 st.write("Visualize the correlation between different stocks in your portfolio.")
-tickers = st.text_input("Enter stock tickers (comma-separated)", "AAPL, MSFT, GOOGL, AMZN, FB")
+tickers = st.multiselect("Select Stocks for Correlation Heatmap", snp500_tickers, default=["AAPL", "MSFT", "GOOGL"])
 period = st.selectbox("Select Period", ["1mo", "3mo", "6mo", "1y", "2y", "5y", "10y", "max"])
 
 
 if st.button("Generate Correlation Heatmap"):
-    tickers_list = [t.strip() for t in tickers.split(",")]
+    tickers_list = list(tickers)
     stock_data = get_portfolio_history(tickers_list, period=period)
     fig = plot_correlation_heatmap(stock_data)
     st.plotly_chart(fig, use_container_width=True)
