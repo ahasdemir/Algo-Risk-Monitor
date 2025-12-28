@@ -15,6 +15,12 @@ from analysis_utils import (
     geometric_brownian_motion,
     efficient_frontier_analysis_with_monte_carlo
 )
+st.set_page_config(
+    page_title="Value at Risk (VaR) Analysis",
+    page_icon="📈",
+    layout="centered",
+    initial_sidebar_state="expanded",
+)
 
 st.header("Value at Risk (VaR) Analysis")
 st.write("Calculate the Value at Risk for your portfolio using different methods.")
