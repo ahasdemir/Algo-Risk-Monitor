@@ -15,3 +15,6 @@ st.write("- Use the navigation menu on the left to explore different features of
 st.write("- Each page offers interactive inputs to customize analyses based on your portfolio and risk preferences.")
 st.write("- Visualizations and metrics are dynamically generated to provide clear insights into portfolio performance and risk.")
 st.write("**Get started by selecting a page from the menu!**")
+
+
+st.write("**Legal Disclaimer:** This tool is for educational purposes only and should not be considered financial advice. Always consult with a qualified financial advisor before making investment decisions.")
