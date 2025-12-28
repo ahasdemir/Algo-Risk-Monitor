@@ -20,6 +20,12 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# Menu for navigation
+st.sidebar.title("Navigation")
+menu_options = ["Home", "Indicator Analysis", "Volatility Analysis",
+                "Portfolio Performance", "Value at Risk (VaR)", "Monte Carlo Simulation", "Efficient Frontier"]
+
+
 st.title("The Algo Risk Monitor")
 st.write("Welcome to The Algo Risk Monitor! This application helps you monitor and manage the risks associated with your algorithmic trading strategies.")
 
