@@ -23,12 +23,13 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-home = st.Page("pages/home.py", title="Home", icon=":material/dashboard:")
-gbm = st.Page("pages/Geometric_Brownian_Motion.py", title="Geometric Brownian Motion Simulation", icon=":material/finance_mode  :")
+home = st.Page("pages/home.py", title="Home", icon=":material/home:")
+gbm = st.Page("pages/Geometric_Brownian_Motion.py", title="Geometric Brownian Motion Simulation", icon=":material/finance_mode:")
 portfolio_performance = st.Page("pages/portfolio_performance.py", title="Portfolio Performance", icon=":material/trending_up:")
 var_analysis = st.Page("pages/VaR.py", title="Value at Risk (VaR) Analysis", icon=":material/assessment:")
+correlation_heatmap = st.Page("pages/correlation_heatmap.py", title="Correlation Heatmap", icon=":material/bubble_chart:")
 
-pg = st.navigation([home, gbm, var_analysis, portfolio_performance])
+pg = st.navigation([home, gbm, var_analysis, correlation_heatmap, portfolio_performance])
 pg.run()
 
 # Footer

@@ -171,7 +171,7 @@ def plot_correlation_heatmap(df):
         z=corr.values,
         x=corr.columns,
         y=corr.columns,
-        colorscale='Viridis',
+        colorscale='jet',
         zmin=-1, zmax=1
     ))
     fig.update_layout(title="Stock Correlation Matrix", height=500)
