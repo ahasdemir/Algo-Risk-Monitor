@@ -106,9 +106,7 @@ This project is evolving into a comprehensive Risk Management Suite. Upcoming mo
 
   - [x] **Portfolio Optimization:** Mean-Variance Analysis & Efficient Frontier.
   - [x] **Monte Carlo Simulation:** 10,000+ scenarios for optimal asset allocation.
-  - [ ] **Correlation Matrix:** Detecting cross-asset dependencies (Heatmap).
-  - [ ] **Beta Calculation:** Measuring systematic risk against benchmark indices (S\&P 500 / BIST 100).
-  - [ ] **Credit Risk Modeling:** Implementing Machine Learning classifiers for credit scoring.
+  - [x] **GBM Forecast:** 10,000+ calculation for expected returns for given portfolio
   - [ ] **Web Deployment:** Converting the notebook into a live **Streamlit** web application.
 
 -----
