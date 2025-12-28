@@ -24,7 +24,7 @@ st.set_page_config(
 )
 
 home = st.Page("pages/home.py", title="Home", icon=":material/dashboard:")
-gbm = st.Page("pages/Geometric_Brownian_Motion.py", title="Geometric Brownian Motion Simulation", icon=":material/:")
+gbm = st.Page("pages/Geometric_Brownian_Motion.py", title="Geometric Brownian Motion Simulation", icon=":material/finance_mode  :")
 portfolio_performance = st.Page("pages/portfolio_performance.py", title="Portfolio Performance", icon=":material/trending_up:")
 var_analysis = st.Page("pages/VaR.py", title="Value at Risk (VaR) Analysis", icon=":material/assessment:")
 
