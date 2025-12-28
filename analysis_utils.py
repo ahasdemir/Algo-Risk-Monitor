@@ -164,3 +164,15 @@ def efficient_frontier_analysis_with_monte_carlo(df_portfolio, num_portfolios=10
 
     max_idx = sharpe_arr.argmax()
     return max_idx, ret_arr[max_idx], vol_arr[max_idx], all_weights[max_idx, :]
+
+def plot_correlation_heatmap(df):
+    corr = df.corr()
+    fig = go.Figure(data=go.Heatmap(
+        z=corr.values,
+        x=corr.columns,
+        y=corr.columns,
+        colorscale='Viridis',
+        zmin=-1, zmax=1
+    ))
+    fig.update_layout(title="Stock Correlation Matrix", height=500)
+    return fig

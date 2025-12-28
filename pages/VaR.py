@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+import seaborn as sns
 from analysis_utils import (
     get_stock_data,
     add_indicators,
@@ -46,6 +49,32 @@ if st.button("Calculate VaR"):
         st.metric("Historical VaR", f"${historical_var:,.2f}")
     with col3:
         st.metric("Portfolio Volatility", f"{port_vol:.2%}")
+    
+    portfolio_hist_ret = portfolio_data.dot(np.array(weights)).dropna()
+
+    # 2. %1'lik Sınırı Bul (Percentile)
+    cutoff = np.percentile(portfolio_hist_ret, (1 - confidence_level) * 100)
+
+    # --- GRAFİK ---
+    plt.figure(figsize=(12, 6))
+
+    # Histogram (Dağılım)
+    sns.histplot(portfolio_hist_ret, bins=50, kde=True, color='skyblue', label='Daily Returns Distribution')
+
+    # VaR Çizgisi (Kırmızı Çizgi)
+    plt.axvline(x=cutoff, color='red', linestyle='--', linewidth=3, label=f'VaR ({confidence_level:.0%}): {cutoff:.2%}')
+
+    # Süsleme
+    plt.title('Historical Return Distribution and Risk Threshold', fontsize=14)
+    plt.xlabel('Daily Return')
+    plt.ylabel('Frequency (Number of Days)')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+
+    # Sol taraftaki "Kuyruk" (Tail) bölgesini boya
+    plt.axvspan(portfolio_hist_ret.min(), cutoff, color='red', alpha=0.2)
+
+    st.pyplot(plt)
 
 st.title("What is Value at Risk (VaR)?")
 st.write("""

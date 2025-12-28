@@ -53,21 +53,35 @@ if st.button("Run Simulation"):
             st.metric("95th Percentile (Best Case)", f"${np.percentile(final_values, 95):,.0f}")
 
 
-        plt.figure(figsize=(12, 6))
-        plt.plot(paths.T, color='blue', alpha=0.05, linewidth=0.5)
-        plt.plot(paths.mean(axis=0), color='firebrick', linewidth=2.5, label='Average Path(Mean)')
-        percentile_05 = np.percentile(paths, 5, axis=0)
-        percentile_95 = np.percentile(paths, 95, axis=0)
-        plt.plot(percentile_95, color='green', linestyle='--', linewidth=1.5, label='%95 Optimistic Scenario')
-        plt.plot(percentile_05, color='orange', linestyle='--', linewidth=1.5, label='%5 Pessimistic Scenario')
-        plt.axhline(y=100000, color='black', linestyle=':', label='Starting Value (100k)')
-        plt.title(f"Portfolio Future Simulation ({period} / {num_simulations} Simulations)", fontsize=14)
-        plt.xlabel("Future Business Days")
-        plt.ylabel("Portfolio Value ($)")
-        plt.legend(loc='upper left')
-        plt.grid(True, alpha=0.3)
+        fig = go.Figure()
 
-        st.pyplot(plt)
+        # 1. Spagetti Çizgileri (Performans için sadece ilk 50 tanesini çizelim)
+        # Hepsini çizersen tarayıcı donabilir.
+        for i in range(min(50, paths.shape[0])):
+            fig.add_trace(go.Scatter(
+                y=paths[i, :],
+                mode='lines',
+                line=dict(color='rgba(50, 0, 220, 0.1)', width=1),
+                showlegend=False
+            ))
+
+        # 2. Ortalama ve Güven Aralıkları
+        mean_path = paths.mean(axis=0)
+        worst_case = np.percentile(paths, 5, axis=0)
+        best_case = np.percentile(paths, 95, axis=0)
+
+        fig.add_trace(go.Scatter(y=mean_path, mode='lines', name='Expected Value (Mean)', line=dict(color='red', width=3)))
+        fig.add_trace(go.Scatter(y=best_case, mode='lines', name='95th Percentile (Best Case)', line=dict(color='green', dash='dash')))
+        fig.add_trace(go.Scatter(y=worst_case, mode='lines', name='5th Percentile (Worst Case)', line=dict(color='orange', dash='dash')))
+
+        fig.update_layout(
+            title=f"GBM Simulation ({num_simulations} Scenarios)",
+            xaxis_title="Trading Day",
+            yaxis_title="Portfolio Value ($)",
+            hovermode="x"
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
 
 st.write("Use run simulation to generate possible future portfolio values based on historical data and the GBM model.")
 
