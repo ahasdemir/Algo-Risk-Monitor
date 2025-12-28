@@ -29,7 +29,6 @@ portfolio_performance = st.Page("pages/portfolio_performance.py", title="Portfol
 var_analysis = st.Page("pages/VaR.py", title="Value at Risk (VaR) Analysis", icon=":material/assessment:")
 
 pg = st.navigation([home, gbm, portfolio_performance, var_analysis])
-st.set_page_config(page_title="Data manager", page_icon=":material/edit:")
 pg.run()
 
 # Footer
