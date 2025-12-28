@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 from analysis_utils import (
     get_stock_data,
     add_indicators,
@@ -51,26 +52,45 @@ if st.button("Run Simulation"):
         with col3:
             st.metric("95th Percentile (Best Case)", f"${np.percentile(final_values, 95):,.0f}")
 
-    # Graph of simulation paths
-        st.subheader("Monte Carlo Simulation Paths")
-        fig = go.Figure()
-        for i in range(min(num_simulations, 100)):  # Plot only first
-            fig.add_trace(go.Scatter(y=paths[i], mode='lines', line=dict(width=1), name=f'Simulation {i+1}', opacity=0.3))
 
-        fig.update_layout(title='Monte Carlo Simulation of Portfolio Value',
-                          xaxis_title='Days',
-                          yaxis_title='Portfolio Value ($)')
-        
-        fig.add_hline(y=start_value, line_dash="dash", line_color="green",
-                        annotation_text="Starting Value", annotation_position="top left")
-        
-        fig.add_hline(y=final_values.mean(), line_dash="dash", line_color="blue",
-                        annotation_text="Expected Value", annotation_position="top left")
-        
-        fig.add_trace(y=np.percentile(final_values, 5), line_dash="dash", line_color="red",
-                        annotation_text="5th Percentile", annotation_position="top left")
-        
-        fig.add_trace(y=np.percentile(final_values, 95), line_dash="dash", line_color="orange",
-                        annotation_text="95th Percentile", annotation_position="top left")
-        
-        st.plotly_chart(fig, use_container_width=True)
+        plt.figure(figsize=(12, 6))
+        plt.plot(paths.T, color='blue', alpha=0.05, linewidth=0.5)
+        plt.plot(paths.mean(axis=0), color='firebrick', linewidth=2.5, label='Average Path(Mean)')
+        percentile_05 = np.percentile(paths, 5, axis=0)
+        percentile_95 = np.percentile(paths, 95, axis=0)
+        plt.plot(percentile_95, color='green', linestyle='--', linewidth=1.5, label='%95 Optimistic Scenario')
+        plt.plot(percentile_05, color='orange', linestyle='--', linewidth=1.5, label='%5 Pessimistic Scenario')
+        plt.axhline(y=100000, color='black', linestyle=':', label='Starting Value (100k)')
+        plt.title(f"Portfolio Future Simulation ({period} / {num_simulations} Simulations)", fontsize=14)
+        plt.xlabel("Future Business Days")
+        plt.ylabel("Portfolio Value ($)")
+        plt.legend(loc='upper left')
+        plt.grid(True, alpha=0.3)
+
+        st.pyplot(plt)
+
+st.write("Use run simulation to generate possible future portfolio values based on historical data and the GBM model.")
+
+st.title("What is Geometric Brownian Motion?")
+st.write("""
+Geometric Brownian Motion (GBM) is a mathematical model used to simulate the random behavior of asset prices over time. It assumes that the logarithm of asset prices follows a Brownian motion with drift, meaning that prices can move up or down in a continuous manner influenced by both predictable trends (drift) and random fluctuations (volatility). GBM is widely used in financial modeling, particularly for option pricing and risk management, as it captures the essential characteristics of financial markets, such as the tendency for prices to grow exponentially over time while also exhibiting randomness.
+""")
+
+left, mid, right = st.columns([1, 2, 1])
+with mid:
+    st.image(
+        "https://wikimedia.org/api/rest_v1/media/math/render/svg/f2a3c0d1dcb510719effde045c26f1a9d0b9cb2d",
+        caption="Stochastical differential equation Formula",
+        width=400,
+    )
+    st.latex(r"S(t) = S(0) \cdot e^{(\mu - \frac{1}{2} \sigma^2)t + \sigma W(t)}")
+    st.write("**Analytical formula of Geometric Brownian Motion:**")
+    st.write("- S(t): Asset price at time t")
+    st.write("- S(0): Initial asset price")
+    st.write("- μ: Drift coefficient (expected return)")
+    st.write("- σ: Volatility coefficient (standard deviation of returns)")
+    st.write("- W(t): Standard Brownian motion (Wiener process) at time t")
+    st.write("- t: Time horizon")
+
+
+st.write("""**Note:** This simulation provides a statistical view of potential future portfolio values based on historical data and the GBM model. It does not predict actual future prices and should be used for educational and risk assessment purposes only.""")

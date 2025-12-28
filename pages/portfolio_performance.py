@@ -44,3 +44,8 @@ if st.button("Analyze Portfolio Performance"):
         st.metric("Portfolio Volatility (Risk)", f"{portfolio_volatility:.2%}")
         
     st.dataframe(portfolio_data.tail(10), use_container_width=True)
+
+st.title("What is Portfolio Performance?")
+st.write("""
+Portfolio performance analysis involves evaluating the returns and risks associated with a portfolio of investments. It uses basic financial metrics such as expected return and volatility to help investors understand how their portfolio is likely to perform under various market conditions. This analysis aids in making informed investment decisions and optimizing asset allocation. This is not a forecast or guarantee of future performance; actual results may vary. This analysis just does basic calculations based on historical data. Gives you returns in given period and annualized volatility.
+""")

@@ -26,9 +26,40 @@ st.set_page_config(
 
 
 home = st.Page("pages/home.py", title="Home", icon=":material/dashboard:")
-gbm = st.Page("pages/Geometric_Brownian_Motion.py", title="Geomatric Brownian Motion Simulation")
-portfolio_performance = st.Page("pages/portfolio_performance.py", title="Portfolio Performance")
+gbm = st.Page("pages/Geometric_Brownian_Motion.py", title="Geometric Brownian Motion Simulation", icon=":material/show_chart:")
+portfolio_performance = st.Page("pages/portfolio_performance.py", title="Portfolio Performance", icon=":material/trending_up:")
+var_analysis = st.Page("pages/VaR.py", title="Value at Risk (VaR) Analysis", icon=":material/assessment:")
 
-pg = st.navigation([home, gbm, portfolio_performance])
+pg = st.navigation([home, gbm, portfolio_performance, var_analysis])
 st.set_page_config(page_title="Data manager", page_icon=":material/edit:")
 pg.run()
+
+# Footer
+FOOTER_GITHUB_URL = "https://github.com/ahasdemir"
+FOOTER_LINKEDIN_URL = "https://www.linkedin.com/in/ahasdemir/"
+
+st.markdown(
+    f"""
+    <style>
+    .arm-footer {{
+        text-align: center;
+        padding: 12px 0 18px 0;
+        color: #6b7280;
+        font-size: 0.95rem;
+    }}
+    .arm-footer a {{
+        color: #2563eb;
+        text-decoration: none;
+        margin: 0 8px;
+        font-weight: 600;
+    }}
+    .arm-footer a:hover {{ text-decoration: underline; }}
+    </style>
+    <div class="arm-footer">
+        MIT License 2025 Ahmet Hasdemir —
+        <a href="{FOOTER_GITHUB_URL}" target="_blank">GitHub</a>
+        <a href="{FOOTER_LINKEDIN_URL}" target="_blank">LinkedIn</a>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
