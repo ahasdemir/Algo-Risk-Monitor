@@ -14,14 +14,15 @@ It leverages **Logarithmic Returns** for statistical accuracy, calculates **Annu
 
 ## 🚀 Key Features
 
-  * **Automated Data Pipeline:** Pulls auto-adjusted OHLCV via `yfinance` and normalizes MultiIndex outputs.
+  * **Automated Data Pipeline:** Pulls auto-adjusted OHLCV via `yfinance` and normalizes MultiIndex outputs. Supports all 503 S&P 500 constituents.
   * **Momentum + Trend:** RSI, SMA-20/50 crossovers, and price dashboard candlesticks in Plotly.
   * **Volatility + VaR Suite:** 21-day annualized volatility, Hull-style parametric VaR, and historical VaR for both single tickers and weighted portfolios.
-  * **Portfolio Analytics:** Expected returns, covariance matrix, efficient frontier exploration, and Monte Carlo search for maximum Sharpe.
-  * **Screener:** BIST tickers scanner to surface the top 10 performers over a chosen window for deeper analysis.
-  * **Optimization Experiments:** Minimum-risk (VaR) weight search across the "Magnificent 7" universe.
+  * **Portfolio Analytics:** Expected returns, covariance matrix, efficient frontier exploration (with risk-free rate support), and Monte Carlo search for maximum Sharpe.
+  * **Smart Weight Input:** Equal-weight option for quick portfolio setup; automatic validation and normalization of custom weights across all analysis pages.
+  * **Optimization Engine:** Efficient frontier with 10,000+ Monte Carlo simulations; finds optimal portfolios by Sharpe ratio and minimum volatility.
   * **Scenario Engine:** Geometric Brownian Motion simulation (500+ paths) with percentile bands for forward portfolio valuation.
-  * **Visual Outputs:** Plotly for interactive dashboards; Matplotlib/Seaborn for VaR distribution overlays.
+  * **Visual Outputs:** Plotly for interactive dashboards; Matplotlib/Seaborn for VaR distribution overlays; efficient frontier scatter plots.
+  * **Streamlit Web App:** Interactive multi-page dashboard for real-time analysis, no coding required.
 
 -----
 
@@ -81,33 +82,53 @@ Monte Carlo forward paths ($S_t = S_{t-1} \exp((\mu - 0.5\sigma^2) + \sigma Z)$)
 
     ```bash
     git clone https://github.com/ahasdemir/Algo-Risk-Monitor.git
-    cd Algo-Risk Monitor
+    cd Algo-Risk-Monitor
     ```
 
-2.  **Install dependencies:**
+2.  **Create a virtual environment and install dependencies:**
 
     ```bash
-    pip install yfinance pandas numpy plotly scipy matplotlib seaborn
+    python -m venv .venv
+    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+    pip install -r requirements.txt
     ```
 
-3.  **Run the analysis:**
-    Open `Financial_Dashboard_Analysis.ipynb` in Jupyter Notebook or VS Code, select your ticker list (e.g., `GARAN.IS`, `AAPL`, `NVDA`), and run all cells. The notebook prints tail summaries, shows dashboards, and can export CSVs (e.g., `TSLA_volatility_analysis.csv`).
+3.  **Run the Streamlit app:**
 
-4.  **Optional workflows:**
-    * Switch `period` arguments (e.g., `10y`) for longer histories.
-    * Use the BIST screener to identify the top performers and feed them into the portfolio simulations.
-    * Adjust `num_portfolios` or `simulations` to trade off speed vs. scenario coverage.
+    ```bash
+    streamlit run streamlit_app.py
+    ```
+    Open your browser to `http://localhost:8501`. Use the sidebar to navigate through:
+    - **Home:** Dashboard overview
+    - **Geometric Brownian Motion:** Simulate future portfolio values (500+ scenarios)
+    - **Value at Risk Analysis:** Parametric & historical VaR with distribution plots
+    - **Portfolio Performance:** Analyze expected returns and volatility
+    - **Correlation Heatmap:** Visualize stock correlations
+    - **Portfolio Optimization:** Efficient frontier and optimal allocation
+
+4.  **Optional: Run the Jupyter notebook:**
+    Open `Financial_Dashboard_Analysis.ipynb` in Jupyter Notebook or VS Code for notebook-style analysis with cell-by-cell execution.
+
+5.  **Usage tips:**
+    * Select from all 503 S&P 500 stocks in the portfolio pages.
+    * Use **"Use equal weights"** checkbox for quick equal-weight portfolios.
+    * Adjust **risk-free rate** in portfolio optimization to match current market conditions.
+    * Tune **confidence level**, **time horizon**, and **number of simulations** for sensitivity analysis.
 
 -----
 
 ## 🔮 Roadmap (Future Improvements)
 
-This project is evolving into a comprehensive Risk Management Suite. Upcoming modules:
+This project is evolving into a comprehensive Risk Management Suite. Completed and upcoming features:
 
   - [x] **Portfolio Optimization:** Mean-Variance Analysis & Efficient Frontier.
   - [x] **Monte Carlo Simulation:** 10,000+ scenarios for optimal asset allocation.
-  - [x] **GBM Forecast:** 10,000+ calculation for expected returns for given portfolio
-  - [ ] **Web Deployment:** Converting the notebook into a live **Streamlit** web application.
+  - [x] **GBM Forecast:** Forward valuation paths with percentile bands for portfolio scenarios.
+  - [x] **Web Deployment:** Live **Streamlit** web application with interactive multi-page dashboard.
+  - [ ] **Real-time Updates:** WebSocket feed for live market data (intraday VaR refresh).
+  - [ ] **Backtesting Engine:** Walk-forward validation of optimal allocations.
+  - [ ] **Export & Reporting:** PDF reports, Excel snapshot exports, and scheduled email alerts.
+  - [ ] **Advanced Risk:** Copula models, tail hedging strategies, and stress scenario builder.
 
 -----
 

@@ -29,8 +29,9 @@ portfolio_performance = st.Page("pages/portfolio_performance.py", title="Portfol
 var_analysis = st.Page("pages/VaR.py", title="Value at Risk (VaR) Analysis", icon=":material/assessment:")
 correlation_heatmap = st.Page("pages/correlation_heatmap.py", title="Correlation Heatmap", icon=":material/bubble_chart:")
 portfolio_optimization = st.Page("pages/portfolio_optimization.py", title="Portfolio Optimization", icon=":material/speed:")
+stock_page = st.Page("pages/stock_page.py", title="Stock Price Analysis", icon=":material/price_change:")
 
-pg = st.navigation([home, gbm, var_analysis, correlation_heatmap, portfolio_optimization, portfolio_performance])
+pg = st.navigation([home, gbm, var_analysis, correlation_heatmap, stock_page, portfolio_optimization, portfolio_performance])
 pg.run()
 
 # Footer

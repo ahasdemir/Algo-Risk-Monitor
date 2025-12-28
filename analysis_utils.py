@@ -19,6 +19,7 @@ def get_stock_data(ticker, period="1y"):
 def add_indicators(df):
     df["SMA_20"] = df["Close"].rolling(20).mean()
     df["SMA_50"] = df["Close"].rolling(50).mean()
+    df["SMA_200"] = df["Close"].rolling(200).mean()
     delta = df["Close"].diff()
     gain = delta.where(delta > 0, 0).rolling(14).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
@@ -28,7 +29,22 @@ def add_indicators(df):
 
 def volatility_analysis(df):
     df["Volatility"] = df["Log_Return"].rolling(21).std() * np.sqrt(252)
-    return df
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=df.index,
+        y=df["Volatility"],
+        mode='lines',
+        name='Annualized Volatility (21-day)',
+        line=dict(color='blue', width=2)
+    ))
+    fig.update_layout(
+        title="Rolling Annualized Volatility",
+        xaxis_title="Date",
+        yaxis_title="Volatility",
+        hovermode="x unified",
+        height=400
+    )
+    return fig
 
 @st.cache_data
 def get_portfolio_history(symbols, period='1y'):
