@@ -939,4 +939,6 @@ popular_crypto_tickers = [
     "ZEC-USD",      # Zcash
     "DASH-USD",     # Dash
     "DCR-USD",      # Decred
+    "PAXG-USD",    # PAX Gold
+    
 ]
