@@ -9,6 +9,17 @@ from plotly.subplots import make_subplots
 import streamlit as st
 
 
+def get_annualization_factor(ticker):
+    """
+    Determine annualization factor based on asset type.
+    Crypto trades 365 days/year, stocks trade 252 days/year.
+    """
+    # Check if ticker is crypto (ends with -USD or similar patterns)
+    crypto_patterns = ["-USD", "-USDT", "-EUR", "-GBP", "-JPY", "-USDC"]
+    is_crypto = any(ticker.upper().endswith(pattern) for pattern in crypto_patterns)
+    return 365 if is_crypto else 252
+
+
 @st.cache_data
 def get_stock_data(ticker, period="1y"):
     df = yf.download(ticker, period=period, auto_adjust=True)
@@ -30,8 +41,10 @@ def add_indicators(df):
     return df
 
 
-def volatility_analysis(df):
-    df["Volatility"] = df["Log_Return"].rolling(21).std() * np.sqrt(252)
+def volatility_analysis(df, ticker=None, annualization_factor=None):
+    if annualization_factor is None:
+        annualization_factor = get_annualization_factor(ticker) if ticker else 252
+    df["Volatility"] = df["Log_Return"].rolling(21).std() * np.sqrt(annualization_factor)
     fig = go.Figure()
     fig.add_trace(
         go.Scatter(
@@ -83,9 +96,9 @@ def get_portfolio_history(symbols, period="1y"):
     return portfolio_df
 
 
-def portfolio_performance_with_data(portfolio_df, weights, period="1y"):
-    expected_returns = portfolio_df.mean() * 252
-    covariance_matrix = portfolio_df.cov() * 252
+def portfolio_performance_with_data(portfolio_df, weights, period="1y", annualization_factor=252):
+    expected_returns = portfolio_df.mean() * annualization_factor
+    covariance_matrix = portfolio_df.cov() * annualization_factor
     weights = np.array(weights)
     portfolio_return = np.sum(expected_returns * weights)
     portfolio_volatility = np.sqrt(
@@ -94,14 +107,14 @@ def portfolio_performance_with_data(portfolio_df, weights, period="1y"):
     return portfolio_return, portfolio_volatility
 
 
-def calculate_parametric_var(df, portfolio_value=100000, confidence_level=0.95, day=1):
+def calculate_parametric_var(df, portfolio_value=100000, confidence_level=0.95, day=1, annualization_factor=252):
     """
     Hull'un 'Linear Model'ini (Parametrik VaR) kullanarak riski hesaplar.
     """
 
     current_annual_volatility = df["Volatility"].iloc[-1]
 
-    daily_volatility = current_annual_volatility / np.sqrt(252)
+    daily_volatility = current_annual_volatility / np.sqrt(annualization_factor)
 
     z_score = norm.ppf(confidence_level)
 
@@ -131,16 +144,16 @@ def calculate_historical_var(df, portfolio_value=100000, confidence_level=0.95, 
 
 
 def parametric_var_portfolio(
-    df_portfolio, weights, portfolio_value=100000, confidence_level=0.95, day=1
+    df_portfolio, weights, portfolio_value=100000, confidence_level=0.95, day=1, annualization_factor=252
 ):
     """
     Portföy için Hull'un 'Linear Model'ini (Parametrik VaR) kullanarak riski hesaplar.
     """
     weights = np.array(weights)
 
-    portfolio_volatility = portfolio_performance_with_data(df_portfolio, weights)[1]
+    portfolio_volatility = portfolio_performance_with_data(df_portfolio, weights, annualization_factor=annualization_factor)[1]
 
-    daily_volatility = portfolio_volatility / np.sqrt(252)
+    daily_volatility = portfolio_volatility / np.sqrt(annualization_factor)
 
     z_score = norm.ppf(confidence_level)
 
@@ -204,6 +217,7 @@ def efficient_frontier_analysis_with_monte_carlo(
     period="1y",
     seed=None,
     risk_free_rate: float = 0.0,
+    annualization_factor=252,
 ):
     if seed is not None:
         np.random.seed(seed)
@@ -219,7 +233,7 @@ def efficient_frontier_analysis_with_monte_carlo(
         w = np.random.random(n)
         w /= w.sum()
         all_weights[i, :] = w
-        ret, vol = portfolio_performance_with_data(df_portfolio, list(w), period=period)
+        ret, vol = portfolio_performance_with_data(df_portfolio, list(w), period=period, annualization_factor=annualization_factor)
         ret_arr[i] = ret
         vol_arr[i] = vol
         sharpe_arr[i] = (ret - risk_free_rate) / vol if vol != 0 else 0
@@ -823,4 +837,106 @@ snp500_tickers = [
     "ZBRA",
     "ZBH",
     "ZTS",
+]
+
+
+popular_crypto_tickers = [
+    "BTC-USD",      # Bitcoin
+    "ETH-USD",      # Ethereum
+    "USDT-USD",     # Tether
+    "BNB-USD",      # Binance Coin
+    "XRP-USD",      # Ripple
+    "SOL-USD",      # Solana
+    "ADA-USD",      # Cardano
+    "DOGE-USD",     # Dogecoin
+    "DOT-USD",      # Polkadot
+    "MATIC-USD",    # Polygon
+    "LINK-USD",     # Chainlink
+    "LTC-USD",      # Litecoin
+    "BCH-USD",      # Bitcoin Cash
+    "XLM-USD",      # Stellar
+    "AVAX-USD",     # Avalanche
+    "USDC-USD",     # USD Coin
+    "ATOM-USD",     # Cosmos
+    "UNI-USD",      # Uniswap
+    "NEAR-USD",     # NEAR Protocol
+    "FTT-USD",      # FTX Token
+    "ETC-USD",      # Ethereum Classic
+    "XMR-USD",      # Monero
+    "SHIB-USD",     # Shiba Inu
+    "VET-USD",      # VeChain
+    "ICP-USD",      # Internet Computer
+    "APE-USD",      # ApeCoin
+    "HBAR-USD",     # Hedera
+    "CRO-USD",      # Cronos
+    "FLOW-USD",     # Flow
+    "FIL-USD",      # Filecoin
+    "GRT-USD",      # The Graph
+    "SAND-USD",     # The Sandbox
+    "GALA-USD",     # Gala
+    "TRX-USD",      # TRON
+    "THETA-USD",    # Theta
+    "MANA-USD",     # Decentraland
+    "AAVE-USD",     # Aave
+    "WBTC-USD",     # Wrapped Bitcoin
+    "COMP-USD",     # Compound
+    "MKR-USD",      # Maker
+    "SNXU-USD",     # Synthetix
+    "YFI-USD",      # Yearn Finance
+    "SUSHI-USD",    # SushiSwap
+    "1INCH-USD",    # 1inch
+    "LDO-USD",      # Lido
+    "ARB-USD",      # Arbitrum
+    "OP-USD",       # Optimism
+    "GMX-USD",      # GMX
+    "BLUR-USD",     # Blur
+    "ENS-USD",      # Ethereum Name Service
+    "APT-USD",      # Aptos
+    "SUI-USD",      # Sui
+    "SEI-USD",      # Sei
+    "BONK-USD",     # Bonk
+    "JTO-USD",      # Jito
+    "WIF-USD",      # dogwifhat
+    "POPCAT-USD",   # PopCat
+    "PEPE-USD",     # Pepe
+    "DYDX-USD",     # dYdX
+    "STRK-USD",     # Starknet
+    "ORDI-USD",     # Ordinals
+    "RUNE-USD",     # THORChain
+    "SCRT-USD",     # Secret
+    "ALGO-USD",     # Algorand
+    "EGLD-USD",     # MultiversX
+    "PUMP-USD",     # Pump
+    "ZETA-USD",     # Zeta
+    "BLUR-USD",     # Blur Token
+    "PENDLE-USD",   # Pendle
+    "GNO-USD",      # Gnosis
+    "BAL-USD",      # Balancer
+    "CRV-USD",      # Curve
+    "CONVEX-USD",   # Convex Finance
+    "FRAX-USD",     # Frax
+    "SPELL-USD",    # Spell Token
+    "MAGIC-USD",    # Magic Token
+    "FLOKI-USD",    # Floki
+    "AKITA-USD",    # Akita Inu
+    "SAITAMA-USD",  # Saitama
+    "KISHU-USD",    # Kishu Inu
+    "BABY-USD",     # Baby Doge Coin
+    "SAFEMOON-USD", # SafeMoon
+    "ELONGATE-USD", # Elongate
+    "CATGIRL-USD",  # Catgirl
+    "CUMROCKET-USD",# CumRocket
+    "MIST-USD",     # Mist
+    "BNSD-USD",     # Binance USD
+    "TUSD-USD",     # TrueUSD
+    "DAI-USD",      # Dai
+    "BUSD-USD",     # Binance USD
+    "SUSD-USD",     # sUSD
+    "GUSD-USD",     # Gemini Dollar
+    "HUSD-USD",     # Huobi USD
+    "EURS-USD",     # Stasis EURS
+    "TRYB-USD",     # Bilira
+    "ZEC-USD",      # Zcash
+    "DASH-USD",     # Dash
+    "DCR-USD",      # Decred
 ]
