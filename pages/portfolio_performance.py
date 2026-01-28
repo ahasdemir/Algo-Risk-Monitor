@@ -16,6 +16,7 @@ from analysis_utils import (
     efficient_frontier_analysis_with_monte_carlo,
     plot_correlation_heatmap,
     snp500_tickers,
+    popular_crypto_tickers,
 )
 
 st.set_page_config(
@@ -30,7 +31,7 @@ st.write("Analyze the performance of your portfolio over time.")
 
 tickers = st.multiselect(
     "Select Stocks for Portfolio Analysis",
-    snp500_tickers,
+    snp500_tickers + popular_crypto_tickers,
     default=["AAPL", "MSFT", "GOOGL"],
 )
 weights_input = st.text_input(

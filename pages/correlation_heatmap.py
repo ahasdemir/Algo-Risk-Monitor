@@ -17,6 +17,7 @@ from analysis_utils import (
     efficient_frontier_analysis_with_monte_carlo,
     plot_correlation_heatmap,
     snp500_tickers,
+    popular_crypto_tickers,
 )
 
 st.set_page_config(page_title="Correlation Heatmap", page_icon="📈")
@@ -25,7 +26,7 @@ st.header("Correlation Heatmap")
 st.write("Visualize the correlation between different stocks in your portfolio.")
 tickers = st.multiselect(
     "Select Stocks for Correlation Heatmap",
-    snp500_tickers,
+    snp500_tickers + popular_crypto_tickers,
     default=["AAPL", "MSFT", "GOOGL"],
 )
 period = st.selectbox(

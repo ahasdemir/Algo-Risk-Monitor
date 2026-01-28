@@ -19,6 +19,7 @@ from analysis_utils import (
     efficient_frontier_analysis_with_monte_carlo,
     plot_correlation_heatmap,
     snp500_tickers,
+    popular_crypto_tickers,
 )
 
 st.set_page_config(
@@ -31,7 +32,7 @@ st.set_page_config(
 st.header("Value at Risk (VaR) Analysis")
 st.write("Calculate the Value at Risk for your portfolio using different methods.")
 tickers = st.multiselect(
-    "Select Stocks for VaR Analysis", snp500_tickers, default=["AAPL", "MSFT", "GOOGL"]
+    "Select Stocks for VaR Analysis", snp500_tickers + popular_crypto_tickers, default=["AAPL", "MSFT", "GOOGL"]
 )
 weights_input = st.text_input(
     "Enter corresponding weights (comma-separated)", "0.33, 0.33, 0.34"

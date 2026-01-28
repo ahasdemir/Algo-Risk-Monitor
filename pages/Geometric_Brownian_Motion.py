@@ -17,6 +17,7 @@ from analysis_utils import (
     efficient_frontier_analysis_with_monte_carlo,
     plot_correlation_heatmap,
     snp500_tickers,
+    popular_crypto_tickers
 )
 
 st.set_page_config(
@@ -30,7 +31,7 @@ st.header("Monte Carlo Geometric Brownian Motion Simulation")
 st.write("Simulate future stock prices using Geometric Brownian Motion.")
 tickers = st.multiselect(
     "Select Stocks for GBM Simulation",
-    snp500_tickers,
+    snp500_tickers + popular_crypto_tickers,
     default=["AAPL", "MSFT", "GOOGL"],
 )
 weights_input = st.text_input(

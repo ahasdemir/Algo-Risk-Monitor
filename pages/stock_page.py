@@ -17,6 +17,7 @@ from analysis_utils import (
     efficient_frontier_analysis_with_monte_carlo,
     plot_correlation_heatmap,
     snp500_tickers,
+    popular_crypto_tickers,
 )
 
 st.set_page_config(
@@ -30,7 +31,7 @@ st.header("Stock Price Analysis")
 st.write("Analyze historical stock prices and visualize key indicators.")
 
 ticker = st.selectbox(
-    "Select Stock Ticker", snp500_tickers, index=snp500_tickers.index("AAPL")
+    "Select Stock Ticker", snp500_tickers + popular_crypto_tickers, index=snp500_tickers.index("AAPL")
 )
 period = st.selectbox(
     "Select Period", ["1mo", "3mo", "6mo", "1y", "2y", "5y", "10y", "max"], index=5
