@@ -10,17 +10,23 @@ st.set_page_config(
 
 st.title("Algo Risk Monitor")
 st.write(
-    "In financial markets, price trends often mask the underlying risk. **Algo-Risk Monitor** is a quantitative analysis tool that now blends **technical momentum signals** with **multi-layered risk analytics** (parametric & historical VaR, portfolio stress tests, Monte Carlo) to turn raw market data into actionable insight. It leverages **Logarithmic Returns** for statistical accuracy, calculates **Annualized Volatility** to standardize risk across timeframes, and layers on **RSI/SMA momentum**, **efficient frontier search**, and **scenario simulations**."
+    "In financial markets, price trends often mask the underlying risk. **Algo-Risk Monitor** is a quantitative analysis tool that blends **technical momentum signals** with **multi-layered risk analytics** (parametric & historical VaR, portfolio stress tests, Monte Carlo) to turn raw market data into actionable insight. It leverages **Logarithmic Returns** for statistical accuracy, calculates **Annualized Volatility** to standardize risk across timeframes, and layers on **RSI/SMA momentum**, **efficient frontier search**, and **scenario simulations**. Now supporting both **traditional stocks and cryptocurrencies** with intelligent annualization (252 days for stocks, 365 days for 24/7 crypto markets)."
 )
 
 st.write(
     "- Use the navigation menu on the left to explore different features of the Algo Risk Monitor.",
 )
 st.write(
+    "- Analyze **S&P 500 stocks** (503 tickers) and **100+ popular cryptocurrencies** including Bitcoin, Ethereum, Solana, and more."
+)
+st.write(
     "- Each page offers interactive inputs to customize analyses based on your portfolio and risk preferences."
 )
 st.write(
     "- Visualizations and metrics are dynamically generated to provide clear insights into portfolio performance and risk."
+)
+st.write(
+    "- **Crypto-aware calculations:** Automatically uses 365-day annualization for cryptocurrencies that trade 24/7."
 )
 st.write("**Get started by selecting a page from the menu!**")
 

@@ -46,7 +46,7 @@ num_simulations = st.number_input(
     "Number of Simulations", min_value=100, max_value=5000, value=500
 )
 time_horizon = st.number_input(
-    "Time Horizon (days)", min_value=1, max_value=252, value=252
+    "Time Horizon (days)", min_value=1, max_value=365, value=252
 )
 
 if st.button("Run Simulation"):

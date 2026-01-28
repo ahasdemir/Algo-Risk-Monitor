@@ -14,9 +14,10 @@ It leverages **Logarithmic Returns** for statistical accuracy, calculates **Annu
 
 ## 🚀 Key Features
 
-  * **Automated Data Pipeline:** Pulls auto-adjusted OHLCV via `yfinance` and normalizes MultiIndex outputs. Supports all 503 S&P 500 constituents.
+  * **Automated Data Pipeline:** Pulls auto-adjusted OHLCV via `yfinance` and normalizes MultiIndex outputs. Supports all 503 S&P 500 constituents and 100+ popular cryptocurrencies.
+  * **Multi-Asset Support:** Analyze traditional stocks and cryptocurrencies with intelligent annualization (252 days for stocks, 365 days for crypto).
   * **Momentum + Trend:** RSI, SMA-20/50 crossovers, and price dashboard candlesticks in Plotly.
-  * **Volatility + VaR Suite:** 21-day annualized volatility, Hull-style parametric VaR, and historical VaR for both single tickers and weighted portfolios.
+  * **Volatility + VaR Suite:** 21-day annualized volatility with asset-specific annualization, Hull-style parametric VaR, and historical VaR for both single tickers and weighted portfolios.
   * **Portfolio Analytics:** Expected returns, covariance matrix, efficient frontier exploration (with risk-free rate support), and Monte Carlo search for maximum Sharpe.
   * **Smart Weight Input:** Equal-weight option for quick portfolio setup; automatic validation and normalization of custom weights across all analysis pages.
   * **Optimization Engine:** Efficient frontier with 10,000+ Monte Carlo simulations; finds optimal portfolios by Sharpe ratio and minimum volatility.
@@ -38,8 +39,8 @@ $$r_t = \ln(\frac{P_t}{P_{t-1}})$$
 ### 2\. Annualized Volatility (Risk)
 
 Volatility is calculated as the rolling standard deviation of log returns. To make it comparable to industry standards (like VIX), it is annualized:
-$$\sigma_{annual} = \sigma_{daily} \times \sqrt{252}$$
-*(Assumption: 252 trading days in a year)*
+$$\sigma_{annual} = \sigma_{daily} \times \sqrt{N}$$
+*(where N = 252 trading days for stocks, 365 days for cryptocurrencies that trade 24/7)*
 
 ### 3\. RSI (Relative Strength Index)
 
@@ -110,7 +111,8 @@ Monte Carlo forward paths ($S_t = S_{t-1} \exp((\mu - 0.5\sigma^2) + \sigma Z)$)
     Open `Financial_Dashboard_Analysis.ipynb` in Jupyter Notebook or VS Code for notebook-style analysis with cell-by-cell execution.
 
 5.  **Usage tips:**
-    * Select from all 503 S&P 500 stocks in the portfolio pages.
+    * Select from all 503 S&P 500 stocks and 100+ popular cryptocurrencies in the portfolio pages.
+    * Cryptocurrencies automatically use 365-day annualization for accurate volatility calculations.
     * Use **"Use equal weights"** checkbox for quick equal-weight portfolios.
     * Adjust **risk-free rate** in portfolio optimization to match current market conditions.
     * Tune **confidence level**, **time horizon**, and **number of simulations** for sensitivity analysis.
